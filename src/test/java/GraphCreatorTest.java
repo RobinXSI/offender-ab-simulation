@@ -15,14 +15,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class GraphCreatorTest {
-    private HashMap<Integer, Intersection> allIntersections;
-    private List<Road> allRoads;
 
-    @Test public void testIntersectionNotEmpty() throws SQLException, ClassNotFoundException {
+    @Test public void testIntersectionNotEmpty() throws SQLException {
         GraphCreator graphCreator = new GraphCreator();
 
 
-        this.allIntersections = graphCreator.getAllIntersections();
+        HashMap<Integer, Intersection> allIntersections = graphCreator.getAllIntersections();
 
         assertNotNull("intersect import should not be empty", allIntersections);
         assertTrue("intersect import should import more than one intersection", allIntersections.size() > 1);
@@ -30,10 +28,10 @@ public class GraphCreatorTest {
         System.out.println(allIntersections.size());
     }
 
-    @Test public void testRoadsNotEmpty() throws SQLException, ClassNotFoundException {
+    @Test public void testRoadsNotEmpty() throws SQLException {
         GraphCreator graphCreator = new GraphCreator();
 
-        this.allRoads = graphCreator.getAllRoads(null);
+        List<Road> allRoads = graphCreator.getAllRoads();
 
         assertNotNull("roads import should not be empty", allRoads);
         assertTrue("roads import should import more than one intersection", allRoads.size() > 1);
@@ -41,7 +39,7 @@ public class GraphCreatorTest {
         System.out.println(allRoads.size());
     }
 
-    @Test public void testCreateGraph() throws SQLException, ClassNotFoundException {
+    @Test public void testCreateGraph() throws SQLException {
         GraphCreator graphCreator = new GraphCreator();
         WeightedGraph<Intersection, DefaultWeightedEdge> graph = graphCreator.createGraph();
         assertTrue("does not contain vertices", graph.vertexSet().size() > 0);
