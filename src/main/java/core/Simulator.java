@@ -7,6 +7,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class Simulator {
     private static Simulator instance = new Simulator();
@@ -14,8 +15,10 @@ public class Simulator {
     public final static int SRID = 2263;
     public final static double STATIC_RADIUS = 1000;
 
-    WeightedGraph<Intersection, DefaultWeightedEdge> graph;
-    Connection sqlConnection;
+    private WeightedGraph<Intersection, DefaultWeightedEdge> graph;
+    private HashMap<Integer, Intersection> verticesMap;
+
+    private Connection sqlConnection;
 
     private Simulator() {
         try {
@@ -35,11 +38,18 @@ public class Simulator {
         return graph;
     }
 
-    public void setGraph(WeightedGraph<Intersection, DefaultWeightedEdge> graph) {
+    public void setGraph(WeightedGraph<Intersection, DefaultWeightedEdge> graph, HashMap<Integer, Intersection> verticesMap) {
         this.graph = graph;
+        this.verticesMap = verticesMap;
     }
 
     public Connection getSqlConnection() {
         return sqlConnection;
     }
+
+    public Intersection getIntersectionById(int id) {
+        return verticesMap.get(id);
+    }
+
+
 }

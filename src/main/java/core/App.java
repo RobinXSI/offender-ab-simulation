@@ -13,12 +13,12 @@ public class App {
     public static void main(String[] args) throws SQLException {
         GraphCreator graphCreator = new GraphCreator();
         WeightedGraph<Intersection, DefaultWeightedEdge> graph = graphCreator.createGraph();
-        Simulator.get().setGraph(graph);
+
 
         Geography geography = new Geography();
         Intersection intersection = geography.getRandomIntersection();
 
-        Agent agent = new Agent(intersection.getPoint());
+        Agent agent = new Agent(intersection);
 
         agent.step();
 

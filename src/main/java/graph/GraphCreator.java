@@ -18,27 +18,29 @@ public class GraphCreator {
         HashMap<Integer, Intersection> intersections = null;
         try {
             intersections = getAllIntersections();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Problems with SQL Query");
-        }
 
-        for (Intersection intersection : intersections.values()) {
-            graph.addVertex(intersection);
-        }
+            for (Intersection intersection : intersections.values()) {
+                graph.addVertex(intersection);
+            }
 
-        try {
             for (Road road : getAllRoads()) {
                 Intersection from = intersections.get(road.fromId);
                 Intersection to = intersections.get(road.toId);
 
                 DefaultWeightedEdge edge = graph.addEdge(from, to);
-                graph.setEdgeWeight(edge, road.road_length);
+
+
+                graph.setEdgeWeight(edge, road.roadLength);
             }
+
+            Simulator.get().setGraph(graph, intersections);
+
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Problems with SQL Query");
         }
+
+
 
         return graph;
     }
