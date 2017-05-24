@@ -57,4 +57,9 @@ There are 4 scripts that setup the database. They can be run independently but s
 
 To verify the import check in QGIS by connecting to the database.
 
+## Agent Simulation
+The agent simulation is implemented with Java.
+As prerequisites is the build tool Grade needed.
+
+
 
