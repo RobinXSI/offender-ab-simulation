@@ -29,15 +29,11 @@ public class App {
 
         Geography geography = new Geography();
 
-        List<RadiusType> radiusTypes = Arrays.asList(RadiusType.STATIC, RadiusType.UNIFORM, RadiusType.LEVY);
-        List<AgentType> agentTypes = Arrays.asList(AgentType.INTERSECTION, AgentType.VENUE, AgentType.VENUE_PRIORITY);
-
         FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
 
 
-
-        for (RadiusType radiusType : radiusTypes) {
-            for (AgentType agentType : agentTypes) {
+        for (RadiusType radiusType : Simulator.RADIUS_TYPES) {
+            for (AgentType agentType : Simulator.AGENT_TYPES) {
                 List<Agent> agents = new ArrayList<>(Simulator.NUMBER_OF_AGENTS);
                 for (int i = 0; i < Simulator.NUMBER_OF_AGENTS; i++) {
                     Intersection intersection = geography.getRandomIntersection();
@@ -52,9 +48,6 @@ public class App {
                         agent.step(stepStatistics);
                     }
                     System.out.println(stepStatistics.toString());
-
-
-
 
                     if (i == 0) {
                         writer.append(StepStatistics.csvHeader() + "\n");

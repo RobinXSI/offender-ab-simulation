@@ -9,7 +9,6 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import statistics.StepStatistics;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class Agent {
                             "ORDER BY venue.checkins_counter DESC;";
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new RuntimeException("Not implemented");
             }
 
             List<Intersection> goals = findGoalsIntersection(searchRadius, sql);
@@ -164,9 +163,10 @@ public class Agent {
     }
 
     private Intersection selectRandomGoalPrioritized(List<Intersection> goals) {
-        int maxIndex = (int) Math.floor(goals.size() / 5.0);
+        // TODO This is a hack
+        int maxIndex = Math.abs((int) Math.ceil(goals.size() / 5.0));
         Random random = new Random();
-        int chosenIndex = random.nextInt(maxIndex) / 2;
+        int chosenIndex = random.nextInt(maxIndex);
 
         Intersection intersection = goals.get(chosenIndex);
         return intersection;
@@ -189,7 +189,21 @@ public class Agent {
         }
 
         if (goal.isEmpty()) {
-            throw new RuntimeException("No goal could be found");
+            goal = findGoalsInDistance(radius * 1.6, radius * 0.4, sql);
+        }
+
+        // TODO This is a hack
+        // Analyze Situation
+
+        if (goal.isEmpty()) {
+            goal = findGoalsInDistance(radius * 3, radius * 0.1, sql);
+        }
+
+        if (goal.isEmpty()) {
+//            throw new RuntimeException("No goal could be found");
+            Geography geography = new Geography();
+            goal = new ArrayList<>();
+            goal.add(geography.getRandomIntersection());
         }
 
         return goal;
@@ -226,7 +240,8 @@ public class Agent {
                 return staticRadius;
             case UNIFORM:
                 double uniformUpperBound = Simulator.STATIC_RADIUS * 2;
-                return random.nextInt((int) uniformUpperBound); // TODO is double needed or int ok?
+                // TODO This is  a hack
+                return Math.min(random.nextInt((int) uniformUpperBound), 300); // TODO is double needed or int ok?
             case LEVY:
 
                 double b = 1.59;
