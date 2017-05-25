@@ -42,8 +42,6 @@ public class Agent {
             goal = selectRandomGoal(goals);
             path = getPath(goal);
 
-
-
             counter++;
         }
 
@@ -51,11 +49,17 @@ public class Agent {
             Geography geography = new Geography();
             this.actualLocation = geography.getRandomIntersection();
             this.step(stepStatistics);
+            return;
+        }
+
+        if (path == null || path.getVertexList() == null) {
+
+            System.out.println();
         }
 
         assert path != null;
         assert path.getVertexList() != null;
-        
+
         moveToGoal(path, stepStatistics);
 
         this.actualLocation = goal;
@@ -91,11 +95,11 @@ public class Agent {
         }
 
         if (path.getLength() != roads.size()) {
-            System.out.println("");
+            System.out.println("CHECK ROAD MISMATCHES");
 
         }
 
-        assert path.getLength() == roads.size();
+//        assert path.getLength() == roads.size();
     }
 
 
