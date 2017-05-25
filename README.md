@@ -58,9 +58,15 @@ There are 4 scripts that setup the database. They can be run independently but s
 To verify the import check in QGIS by connecting to the database.
 
 ## Agent Simulation
-The agent simulation is implemented with Java.
-As prerequisites is the build tool Grade needed.
+The agent simulation is implemented with Java 1.8.
+The build tool gradle is needed which should download all the other dependencies required for Java.
+The "main" Function can be found in App.java.
 
+### Configuration
+A Configuraion like before is not available yet. But all the configurations are defined (should be) in the Simulator class.
+
+### Tests
+There are some tests implemented which should be optimized for fast runtime.
 
 ## TODO
 * Better Logging with a Logging Framework
@@ -70,4 +76,3 @@ As prerequisites is the build tool Grade needed.
 * Improve tests
 * Parallelize
 * Refactoring
-
