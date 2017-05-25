@@ -24,13 +24,12 @@ public class GraphCreator {
             }
 
             for (Road road : getAllRoads()) {
-                Intersection from = intersections.get(road.fromId);
-                Intersection to = intersections.get(road.toId);
+                Intersection from = intersections.get(road.getFromId());
+                Intersection to = intersections.get(road.getToId());
 
                 DefaultWeightedEdge edge = graph.addEdge(from, to);
 
-
-                graph.setEdgeWeight(edge, road.roadLength);
+                graph.setEdgeWeight(edge, road.getRoadLength());
             }
 
             Simulator.get().setGraph(graph, intersections);

@@ -14,6 +14,9 @@ public class Simulator {
 
     public final static int SRID = 2263;
     public final static double STATIC_RADIUS = 1000;
+    public final static int STEP_NUMBER = 100;
+    public final static int NUMBER_OF_AGENTS = 50;
+    public final static int NUMBER_OF_TRIES_TO_RESET_LOCATION = 3;
 
     private WeightedGraph<Intersection, DefaultWeightedEdge> graph;
     private HashMap<Integer, Intersection> verticesMap;

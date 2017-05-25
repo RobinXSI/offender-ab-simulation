@@ -16,13 +16,13 @@ public class AgentTest {
     @Test
     public void testAgentStep() throws SQLException {
         Geography geography = new Geography();
-        Agent agent = new Agent(geography.getRandomIntersection());
-        agent.step();
+        Agent agent = new Agent(0, geography.getRandomIntersection());
+//        agent.step(stepStatistics);
     }
 
     @Test
     public void testAgentFindGoal() throws SQLException {
         Geography geography = new Geography();
-        Agent agent = new Agent(geography.getRandomIntersection());
+        Agent agent = new Agent(0, geography.getRandomIntersection());
     }
 }
