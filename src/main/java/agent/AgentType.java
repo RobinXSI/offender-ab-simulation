@@ -1,4 +1,5 @@
 package agent;
 
-public class AgentType {
+public enum AgentType {
+    INTERSECTION, VENUE, VENUE_PRIORITY
 }

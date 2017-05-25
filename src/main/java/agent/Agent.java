@@ -9,6 +9,7 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import statistics.StepStatistics;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,12 +22,14 @@ public class Agent {
     private int id;
 
     private RadiusType radiusType;
+    private AgentType agentType;
     private Random random = new Random();
 
-    public Agent(int id, Intersection actualLocation, RadiusType radiusType) {
+    public Agent(int id, Intersection actualLocation, RadiusType radiusType, AgentType agentType) {
         this.id = id;
         this.actualLocation = actualLocation;
         this.radiusType = radiusType;
+        this.agentType = agentType;
     }
 
     public int getId() {
@@ -42,8 +45,36 @@ public class Agent {
 
         int counter = 0;
         while (path == null && counter < Simulator.NUMBER_OF_TRIES_TO_RESET_LOCATION) {
-            List<Intersection> goals = findGoals(searchRadius);
+
+
+            String sql = null;
+
+            switch (agentType) {
+                case INTERSECTION:
+                    sql = "SELECT * FROM intersection " +
+                            "WHERE ST_DWithin(ST_GeomFromText(?), intersection.point, ?) " +
+                            "AND NOT ST_DWithin(ST_GeomFromText(?), intersection.point, ?);";
+                    break;
+                case VENUE:
+                    sql = "SELECT intersection.id, intersection.point FROM venue " +
+                            "JOIN road ON venue.road_id  = road.id " +
+                            "JOIN intersection ON road.from_id = intersection.id OR road.to_id = intersection.id " +
+                            "WHERE ST_DWithin(ST_GeomFromText(?), venue.point, ?) " +
+                            "AND NOT ST_DWithin(ST_GeomFromText(?), venue.point, ?);";
+
+                    break;
+                case VENUE_PRIORITY:
+                    sql = "";
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            List<Intersection> goals = findGoalsIntersection(searchRadius, sql);
             goal = selectRandomGoal(goals);
+
+
+
             path = getPath(goal);
 
             counter++;
@@ -131,11 +162,11 @@ public class Agent {
         return intersection;
     }
 
-    private List<Intersection> findGoals(double radius) throws SQLException {
-        List<Intersection> goal = findGoalsInDistance(radius, radius * 0.9);
+    private List<Intersection> findGoalsIntersection(double radius, String sql) throws SQLException {
+        List<Intersection> goal = findGoalsInDistance(radius, radius * 0.9, sql);
 
         if (goal.isEmpty()) {
-            goal = findGoalsInDistance(radius * 1.2, radius * 0.8);
+            goal = findGoalsInDistance(radius * 1.2, radius * 0.8, sql);
         }
 
         if (goal.isEmpty()) {
@@ -145,15 +176,9 @@ public class Agent {
         return goal;
     }
 
-
-
-    private List<Intersection> findGoalsInDistance(double radiusFrom, double radiusTo) throws SQLException {
-        String location = actualLocation.toString();
-
+    private List<Intersection> findGoalsInDistance(double radiusFrom, double radiusTo, String sql) throws SQLException {
         Connection c = Simulator.get().getSqlConnection();
-        PreparedStatement preparedStatement = c.prepareStatement("SELECT * FROM intersection " +
-                "WHERE ST_DWithin(ST_GeomFromText(?), intersection.point, ?) " +
-                "AND NOT ST_DWithin(ST_GeomFromText(?), intersection.point, ?);");
+        PreparedStatement preparedStatement = c.prepareStatement(sql);
 
 
         preparedStatement.setString(1, actualLocation.getPoint().toString());
@@ -161,7 +186,7 @@ public class Agent {
         preparedStatement.setString(3, actualLocation.getPoint().toString());
         preparedStatement.setDouble(4, radiusTo);
 
-//        System.out.println(preparedStatement.toString());
+        System.out.println(preparedStatement.toString());
 
         ResultSet resultSet = preparedStatement.executeQuery();
 

@@ -1,6 +1,7 @@
 package core;
 
 import agent.Agent;
+import agent.AgentType;
 import agent.RadiusType;
 import geography.Geography;
 import graph.GraphCreator;
@@ -15,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class App {
     public static void main(String[] args) throws SQLException {
@@ -30,39 +30,41 @@ public class App {
         Geography geography = new Geography();
 
         List<RadiusType> radiusTypes = Arrays.asList(RadiusType.STATIC, RadiusType.UNIFORM, RadiusType.LEVY);
+        List<AgentType> agentTypes = Arrays.asList(AgentType.INTERSECTION, AgentType.VENUE, AgentType.VENUE_PRIORITY);
+
         for (RadiusType radiusType : radiusTypes) {
-            List<Agent> agents = new ArrayList<>(Simulator.NUMBER_OF_AGENTS);
-            for (int i = 0; i < Simulator.NUMBER_OF_AGENTS; i++) {
-                Intersection intersection = geography.getRandomIntersection();
-                Agent agent = new Agent(i, intersection, radiusType);
-                agents.add(agent);
-            }
-
-            for (int i = 0; i < Simulator.STEP_NUMBER; i++) {
-                StepStatistics stepStatistics = new StepStatistics(i, radiusType);
-                for (Agent agent : agents) {
-                    System.out.println("Agent index: " + agent.getId() + " step: " + i);
-                    agent.step(stepStatistics);
+            for (AgentType agentType : agentTypes) {
+                List<Agent> agents = new ArrayList<>(Simulator.NUMBER_OF_AGENTS);
+                for (int i = 0; i < Simulator.NUMBER_OF_AGENTS; i++) {
+                    Intersection intersection = geography.getRandomIntersection();
+                    Agent agent = new Agent(i, intersection, radiusType, agentType);
+                    agents.add(agent);
                 }
-                System.out.println(stepStatistics.toString());
 
-
-
-                try {
-                    FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
-                    if (i == 0) {
-                        writer.append(StepStatistics.csvHeader() + "\n");
+                for (int i = 0; i < Simulator.STEP_NUMBER; i++) {
+                    StepStatistics stepStatistics = new StepStatistics(i, radiusType);
+                    for (Agent agent : agents) {
+                        System.out.println("Agent index: " + agent.getId() + " step: " + i);
+                        agent.step(stepStatistics);
                     }
-                    writer.append(stepStatistics.toCSV() + "\n");
-                    writer.flush();
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Problems writing file");
+                    System.out.println(stepStatistics.toString());
+
+
+
+                    try {
+                        FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
+                        if (i == 0) {
+                            writer.append(StepStatistics.csvHeader() + "\n");
+                        }
+                        writer.append(stepStatistics.toCSV() + "\n");
+                        writer.flush();
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("Problems writing file");
+                    }
                 }
-
             }
-
         }
 
     }

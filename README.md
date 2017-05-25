@@ -69,4 +69,6 @@ As prerequisites is the build tool Grade needed.
 * Different Radius Types
 * Improve random generators
 * Improve tests
+* Parallelize
+* Refactoring
 
