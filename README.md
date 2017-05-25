@@ -64,7 +64,6 @@ As prerequisites is the build tool Grade needed.
 
 ## TODO
 * Better Logging with a Logging Framework
-* Different Agent Types
 * Parameterization
 * Different Radius Types
 * Improve random generators

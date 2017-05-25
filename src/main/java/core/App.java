@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException {
         App app = new App();
         app.simulate();
     }
 
-    public void simulate() throws SQLException {
+    public void simulate() throws SQLException, IOException {
         GraphCreator graphCreator = new GraphCreator();
         WeightedGraph<Intersection, DefaultWeightedEdge> graph = graphCreator.createGraph();
 
@@ -31,6 +31,10 @@ public class App {
 
         List<RadiusType> radiusTypes = Arrays.asList(RadiusType.STATIC, RadiusType.UNIFORM, RadiusType.LEVY);
         List<AgentType> agentTypes = Arrays.asList(AgentType.INTERSECTION, AgentType.VENUE, AgentType.VENUE_PRIORITY);
+
+        FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
+
+
 
         for (RadiusType radiusType : radiusTypes) {
             for (AgentType agentType : agentTypes) {
@@ -42,7 +46,7 @@ public class App {
                 }
 
                 for (int i = 0; i < Simulator.STEP_NUMBER; i++) {
-                    StepStatistics stepStatistics = new StepStatistics(i, radiusType);
+                    StepStatistics stepStatistics = new StepStatistics(i, radiusType, agentType);
                     for (Agent agent : agents) {
                         System.out.println("Agent index: " + agent.getId() + " step: " + i);
                         agent.step(stepStatistics);
@@ -51,21 +55,15 @@ public class App {
 
 
 
-                    try {
-                        FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
-                        if (i == 0) {
-                            writer.append(StepStatistics.csvHeader() + "\n");
-                        }
-                        writer.append(stepStatistics.toCSV() + "\n");
-                        writer.flush();
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException("Problems writing file");
+
+                    if (i == 0) {
+                        writer.append(StepStatistics.csvHeader() + "\n");
                     }
+                    writer.append(stepStatistics.toCSV() + "\n");
+                    writer.flush();
                 }
             }
         }
-
+        writer.close();
     }
 }

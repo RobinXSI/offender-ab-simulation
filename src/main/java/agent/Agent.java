@@ -205,7 +205,7 @@ public class Agent {
         preparedStatement.setString(3, actualLocation.getPoint().toString());
         preparedStatement.setDouble(4, radiusTo);
 
-        System.out.println(preparedStatement.toString());
+//        System.out.println(preparedStatement.toString());
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
