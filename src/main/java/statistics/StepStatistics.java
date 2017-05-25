@@ -1,5 +1,6 @@
 package statistics;
 
+import agent.RadiusType;
 import org.apache.commons.math3.stat.descriptive.SynchronizedSummaryStatistics;
 
 public class StepStatistics {
@@ -11,8 +12,11 @@ public class StepStatistics {
     final int totalDistance = 3;
     final double totalCrimes = 40707650.91602749456;
 
-    public StepStatistics(int runNumber) {
+    final RadiusType radiusType;
+
+    public StepStatistics(int runNumber, RadiusType radiusType) {
         this.runNumber = runNumber;
+        this.radiusType = radiusType;
     }
 
     private double calculateMetric() {
@@ -36,6 +40,7 @@ public class StepStatistics {
                 ", totalDistance=" + totalDistance +
                 ", totalCrimes=" + totalCrimes +
                 ", metric=" + calculateMetric() +
+                ", radiusType=" + radiusType +
                 '}';
     }
 
@@ -49,7 +54,9 @@ public class StepStatistics {
                 ",runNumber" +
                 ",totalDistance" +
                 ",totalCrimes" +
-                ",metric";
+                ",metric" +
+                ",radiusType"
+                ;
     }
 
     public String toCSV() {
@@ -62,6 +69,8 @@ public class StepStatistics {
                 "," + runNumber +
                 "," + totalDistance +
                 "," + totalCrimes +
-                ", " + calculateMetric();
+                ", " + calculateMetric() +
+                ", " + radiusType
+                ;
     }
 }

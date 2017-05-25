@@ -67,5 +67,6 @@ As prerequisites is the build tool Grade needed.
 * Different Agent Types
 * Parameterization
 * Different Radius Types
-
+* Improve random generators
+* Improve tests
 

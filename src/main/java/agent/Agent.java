@@ -20,9 +20,13 @@ public class Agent {
     private Intersection actualLocation;
     private int id;
 
-    public Agent(int id, Intersection actualLocation) {
+    private RadiusType radiusType;
+    private Random random = new Random();
+
+    public Agent(int id, Intersection actualLocation, RadiusType radiusType) {
         this.id = id;
         this.actualLocation = actualLocation;
+        this.radiusType = radiusType;
     }
 
     public int getId() {
@@ -172,8 +176,36 @@ public class Agent {
     }
 
     private double getSearchRadius() {
-        double staticRadius = Simulator.STATIC_RADIUS;
-        return staticRadius;
+        switch (radiusType) {
+            case STATIC:
+                double staticRadius = Simulator.STATIC_RADIUS;
+                return staticRadius;
+            case UNIFORM:
+                double uniformUpperBound = Simulator.STATIC_RADIUS * 2;
+                return random.nextInt((int) uniformUpperBound); // TODO is double needed or int ok?
+            case LEVY:
+
+                double b = 1.59;
+                //mnimal travel distance in km for NYC is 2.5 km
+                double dmin = 2.5;
+                //maximal distance ( length) for NYC
+                double dmax = 530;
+                double pmax = Math.pow(dmin, -1.6);
+                double pmin = Math.pow(dmax, -1.6);
+
+                // TODO Use better random generator
+                double difference = pmax - pmin;
+                double uniformProb = random.nextDouble() * difference + pmin;
+
+//                double uniformProb = uniformDistribution.nextDoubleFromTo(pmin, pmax);
+                //levy flight: P(x) = Math.pow(x, -1.59) - find out x? given random probability within range
+                double levyflight = (1/uniformProb) * Math.exp(1/b);
+                //levy flight gives distance in km - transform km to foot
+                double levyradius = levyflight * 3280.84;
+                return levyradius;
+            default:
+                return 0;
+        }
     }
 
 }
