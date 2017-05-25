@@ -64,14 +64,24 @@ public class Agent {
 
                     break;
                 case VENUE_PRIORITY:
-                    sql = "";
+                    sql = "SELECT intersection.id, intersection.point FROM venue " +
+                            "JOIN road ON venue.road_id  = road.id " +
+                            "JOIN intersection ON road.from_id = intersection.id OR road.to_id = intersection.id " +
+                            "WHERE ST_DWithin(ST_GeomFromText(?), venue.point, ?) " +
+                            "AND NOT ST_DWithin(ST_GeomFromText(?), venue.point, ?)" +
+                            "ORDER BY venue.checkins_counter DESC;";
                     break;
                 default:
                     throw new NotImplementedException();
             }
 
             List<Intersection> goals = findGoalsIntersection(searchRadius, sql);
-            goal = selectRandomGoal(goals);
+
+            if (agentType == AgentType.VENUE_PRIORITY) {
+                goal = selectRandomGoalPrioritized(goals);
+            } else {
+                goal = selectRandomGoal(goals);
+            }
 
 
 
@@ -151,6 +161,15 @@ public class Agent {
         GraphPath<Intersection, DefaultWeightedEdge> path = dijkstraAlgorithm.getPath(actualVertex, goalVertex);
 
         return path;
+    }
+
+    private Intersection selectRandomGoalPrioritized(List<Intersection> goals) {
+        int maxIndex = (int) Math.floor(goals.size() / 5.0);
+        Random random = new Random();
+        int chosenIndex = random.nextInt(maxIndex) / 2;
+
+        Intersection intersection = goals.get(chosenIndex);
+        return intersection;
     }
 
     private Intersection selectRandomGoal(List<Intersection> goals) {
