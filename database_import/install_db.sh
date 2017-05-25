@@ -1,0 +1,4 @@
+python setup_database.py
+python query_shapefile_intersection.py
+python query_shapefile_road.py
+python query_shapefile_crime.py
