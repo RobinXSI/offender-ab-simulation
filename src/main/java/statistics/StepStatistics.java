@@ -15,10 +15,18 @@ public class StepStatistics {
         this.runNumber = runNumber;
     }
 
+    private double calculateMetric() {
+        double crimesPassed = numberOfCrimes.getSum();
+        double distanceTraveled = walkDistance.getSum();
+
+        return (crimesPassed / totalCrimes) / (distanceTraveled / totalDistance);
+
+    }
+
     @Override
     public String toString() {
         return "StepStatistics{" +
-                ", walkDistanceMean=" + walkDistance.getMean() +
+                " walkDistanceMean=" + walkDistance.getMean() +
                 ", walkDistanceTotal=" + walkDistance.getSum() +
                 ", numberOfCrimesMean=" + numberOfCrimes.getMean() +
                 ", numberOfCrimesTotal=" + numberOfCrimes.getSum() +
@@ -27,6 +35,7 @@ public class StepStatistics {
                 ", runNumber=" + runNumber +
                 ", totalDistance=" + totalDistance +
                 ", totalCrimes=" + totalCrimes +
+                ", metric=" + calculateMetric() +
                 '}';
     }
 
@@ -39,7 +48,8 @@ public class StepStatistics {
                 ",numberOfVenuesTotal" +
                 ",runNumber" +
                 ",totalDistance" +
-                ",totalCrimes";
+                ",totalCrimes" +
+                ",metric";
     }
 
     public String toCSV() {
@@ -51,6 +61,7 @@ public class StepStatistics {
                 "," + numberOfVenues.getSum() +
                 "," + runNumber +
                 "," + totalDistance +
-                "," + totalCrimes;
+                "," + totalCrimes +
+                ", " + calculateMetric();
     }
 }

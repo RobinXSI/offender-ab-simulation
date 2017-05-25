@@ -7,6 +7,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Simulator {
@@ -17,6 +19,7 @@ public class Simulator {
     public final static int STEP_NUMBER = 100;
     public final static int NUMBER_OF_AGENTS = 50;
     public final static int NUMBER_OF_TRIES_TO_RESET_LOCATION = 3;
+    public static String OUTPUT_FILE;
 
     private WeightedGraph<Intersection, DefaultWeightedEdge> graph;
     private HashMap<Integer, Intersection> verticesMap;
@@ -24,6 +27,7 @@ public class Simulator {
     private Connection sqlConnection;
 
     private Simulator() {
+        OUTPUT_FILE = "./data/out/simulation_output_" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".csv";
         try {
             Class.forName("org.postgresql.Driver");
             sqlConnection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/geo-ny", "robin", "");

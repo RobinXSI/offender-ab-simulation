@@ -8,6 +8,8 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import statistics.StepStatistics;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,22 @@ public class App {
                 agent.step(stepStatistics);
             }
             System.out.println(stepStatistics.toString());
+
+
+
+            try {
+                FileWriter writer = new FileWriter(Simulator.OUTPUT_FILE);
+                if (i == 0) {
+                    writer.append(StepStatistics.csvHeader() + "\n");
+                }
+                writer.append(stepStatistics.toCSV() + "\n");
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Problems writing file");
+            }
+
         }
     }
 }

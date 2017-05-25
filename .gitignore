@@ -5,6 +5,9 @@
 *.shp
 *.shx
 
+# csv file
+*.csv
+
 
 ### Java template
 # Compiled class file
